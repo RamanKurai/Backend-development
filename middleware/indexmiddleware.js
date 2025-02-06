@@ -1,29 +1,30 @@
-const express = require("express");
+const express = require('express');
 
 const app = express();
+let requestCount = 0;
 
-// funtion that have boolean for age greater than 14 or not
-// in this part I made a official middleware , how are the middleware were already introduce!
-function isOldEnoughMiddleware(req, res, next) {
-  const age = req.query.age;
-  if (age >= 14) {
-    next();
-    return true;
-  } else {
-    return false;
-  }
-}
+// You have been given an express server which has a few endpoints.
+// Your task is to create a global middleware (app.use) which will
+// maintain a count of the number of requests made to the server in the global
+// requestCount variable
 
-app.get("/ride", isOldEnoughMiddleware, (req, res) => {
-  res.json({
-    msg: "You can sucessfullyy riden the ride1",
-  });
+app.use(function(req , res , next) {
+    requestCount = requestCount + 1
+    next()
+})
+
+app.get('/user', function(req, res) {
+  res.status(200).json({ name: 'john' });
 });
 
-app.get("/ride1", isOldEnoughMiddleware, (req, res) => {
-  res.json({
-    msg: "You can sucessfullyy riden the ride1",
-  });
+app.post('/user', function(req, res) {
+  res.status(200).json({ msg: 'created dummy user' });
 });
 
-app.listen(3000);
+app.get('/requestCount', function(req, res) {
+  res.status(200).json({ requestCount });
+});
+
+
+app.listen(3000)
+module.exports = app;
