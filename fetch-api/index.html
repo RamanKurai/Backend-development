@@ -5,22 +5,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="style.css" />
     <title>Document</title>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
   </head>
   <body>
-    <!-- In this I have learned about basic of the fetch api and 
-     how the server client with some external data  -->
+    <!-- In this I have learned about axios to get external data and convert it into directly
+      JSON & how the server and  client interact with some external data  -->
     Twitter posts
     <div id="posts"></div>
     <script>
       async function getRecentPost() {
-        console.log("before sending the request");
-        const response = await fetch(
+        const response = await axios.get(
           "https://jsonplaceholder.typicode.com/posts/1"
         );
-        const data = await response.json();
-        console.log(data);
-        console.log("after getting the request");
-        document.getElementById("posts").innerHTML = data.title;
+        document.getElementById("posts").innerHTML = response.data.body;
       }
       getRecentPost();
     </script>
