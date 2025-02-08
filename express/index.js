@@ -1,63 +1,40 @@
 const express = require("express")
 const app = express();
-const users = [{
-    users : "John",
-    kidneys:[{
-        healthy : false
-}], healthy : true
-}]
+
+// In this code I Have learned about the queryparameter(Query Routes) ,
+//  that is another method to take input from the user
 app.use(express.json())
-app.get("/" ,(req , res)=>{
-    const johnKidneys = users[0].kidneys;
-    const numberofKidneys = johnKidneys.length;
-    let numberofhealthyKidneys = 0;
-    for (let i = 0; i < johnKidneys.length; i++) {
-      if (johnKidneys[i].healthy) {
-        numberofhealthyKidneys = numberofhealthyKidneys + 1;
-      }        
-    }
-    const numberofUnhealthyKidneys = numberofKidneys - numberofhealthyKidneys
 
+app.get("/sum" , (req , res)=>{
+    const a = parseInt(req.query.a)
+    const b = parseInt(req.query.b)
     res.json({
-        numberofKidneys,
-        numberofhealthyKidneys,
-        numberofUnhealthyKidneys
-    })
-})
-app.post("/" , (req , res)=>{
-    const isHealthy = req.body.isHealthy;
-    users[0].kidneys.push({
-        healthy : isHealthy
-    })
-    res.json({
-        msg : "Done!"
+        answer : a + b
     })
 })
 
-app.put("/" ,  (req , res)=>{
-    for (let i = 0; i < users[0].kidneys.length; i++) {
-    users[0].kidneys[i].healthy = true;
-    }
-    res.json({})
+app.get("/multiply" , (req , res)=>{
+    const a = parseInt(req.query.a)
+    const b = parseInt(req.query.b)
+    res.json({
+        answer : a * b
+    })
 })
 
-app.delete("/", (req, res) => {
-    const newKidneys = [];
-    
-    for (let i = 0; i < users[0].kidneys.length; i++) {
-        if (users[0].kidneys[i].healthy) { 
-            newKidneys.push({ healthy: true });
-        }
-    }
-
-    users[0].kidneys = newKidneys;
-
+app.get("/divide" , (req , res)=>{
+    const a = parseInt(req.query.a)
+    const b = parseInt(req.query.b)
     res.json({
-        msg: "done"
-    });
-});
+        answer : a / b
+    })
+})
 
-
-
+app.get("/subtract" , (req , res)=>{
+    const a = parseInt(req.query.a)
+    const b = parseInt(req.query.b)
+    res.json({
+        answer : a - b
+    })
+})
 
 app.listen(3000)
