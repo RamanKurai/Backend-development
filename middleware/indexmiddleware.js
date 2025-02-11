@@ -1,27 +1,28 @@
 const express = require("express")
 
 const app = express();
-let requestCount = 0;
+//logs = the method , URL and the timestamp
 
-function requestIncreaser () {
-   requestCount = requestCount + 1
+function loggerMiddleware(req , res , next){
+  console.log("Method is called" + req.method)
+  console.log("Host is called" + req.url)
+  console.log(new Date())
+  next();
 }
 
-app.get("/sum/:a/:b" , (req , res)=>{
-  requestIncreaser(req , res)
+app.use(loggerMiddleware)
+
+app.get("/sum/:a/:b" , loggerMiddleware ,(req , res)=>{
   const a = parseInt(req.params.a)
   const b = parseInt(req.params.b)
-  console.log("Total number of the request" + requestCount)
   res.json({
       answer : a + b
   })
 })
 
-app.get("/multiply/:a/:b" , (req , res)=>{
-  requestIncreaser(req , res)
+app.get("/multiply/:a/:b" , loggerMiddleware, (req , res)=>{
   const a = parseInt(req.params.a)
   const b = parseInt(req.params.b)
-  console.log("Total number of the request" + requestCount)
   res.json({
       answer : a * b
   })
