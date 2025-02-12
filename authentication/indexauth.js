@@ -55,4 +55,20 @@ app.post("/signin" , (req , res)=>{
     console.log(users)
 })
 
+app.get("/me" , (req , res)=> {
+   const token = req.headers.token
+   const user = users.find(user => user.token === token)
+
+   if (user) {
+    res.send({
+        username : user.username,
+        password : user.password
+    })
+   } else {
+    res.status(403).send({
+        message : "Invalid username and password"
+    })
+   }
+})
+
 app.listen(3000)
