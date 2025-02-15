@@ -1,7 +1,8 @@
 const express = require("express")
 const jwt = require("jsonwebtoken")
-const JWT_SECRET = "ramankurai2712"
 const app = express();
+const JWT_SECRET = "ramankurai2712"
+
 app.use(express.json())
 
 const users = [];
@@ -9,55 +10,65 @@ const users = [];
 app.post("/signup" , (req , res)=>{
     const username = req.body.username
     const password = req.body.password
-    
+
     users.push({
         username : username,
         password : password
     })
-    res.json({
-        message : "You are Signed Up"
+
+    res.send({
+        message : "You have signed up successfully"
     })
-    console.log(users)
 })
 
 app.post("/signin" , (req , res)=>{
-    const username = req.body.username
-    const password = req.body.password
-    
-    const user = users.find(user => user.username === username && user.password === password)
+   const username = req.body.username
+   const password = req.body.password
 
-    if (user) {
-        const token = jwt.sign({
-            username : username
-        }, JWT_SECRET)
-        user.token = token;
-        res.send({
-            token
-        })
-    } else {
-        res.status(403).send({
-            message : "Invalid username and password"
-        })
-    }
-    console.log(users)
-})
-
-app.get("/me" , (req , res)=> {
-   const token = req.headers.token
-   const decodedInformation = jwt.verify(token ,JWT_SECRET)
-   const username = decodedInformation.username
-   const user = users.find(user => user.token === token)
+   const user = users.find(user => user.username === username && user.password === password)
 
    if (user) {
+    const token = jwt.sign({
+      username : username
+    }, JWT_SECRET)
     res.send({
-        username : user.username,
-        password : user.password
+        token : token
     })
    } else {
     res.status(403).send({
-        message : "Invalid username and password"
+        message : "Invalid username"
     })
    }
+   console.log(users)
+})
+
+const auth = (req , res , next) => {
+   const token = req.headers.token;
+
+   if (token) {
+    jwt.verify(token , JWT_SECRET , (err , decoded) => {
+        if (err) {
+            res.status(401).send({
+                message : "Token Not Verified"
+            })
+        } else {
+            req.user = decoded
+            next();
+        }
+    })
+   }else {
+    res.status(404).send({
+        message : "Invalid Token Id"
+    })
+   }
+}
+
+app.get("/me" , auth , (req , res)=>{
+   const user = req.user;
+
+   res.json({
+    username : user.username
+   })
 })
 
 app.listen(3000)
