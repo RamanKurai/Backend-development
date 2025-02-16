@@ -7,6 +7,10 @@ app.use(express.json())
 
 const users = [];
 
+app.get("/", function(req, res) {
+    res.sendFile(__dirname + "/public/index.html")
+})
+
 app.post("/signup" , (req , res)=>{
     const username = req.body.username
     const password = req.body.password
