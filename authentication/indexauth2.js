@@ -1,64 +1,23 @@
-const express = require("express")
 const jwt = require("jsonwebtoken")
-const JWT_SECRET = "ramankurai2712"
-const app = express();
-app.use(express.json())
+const zod = require("zod")
+const jwtPassword = "ramankurai1234"
 
-const users = [];
+const emailSchema = zod.string().email();
+const passwordSchema = zod.string().min(6);
 
-app.post("/signup" , (req , res)=>{
-    const username = req.body.username
-    const password = req.body.password
-    
-    users.push({
-        username : username,
-        password : password
-    })
-    res.json({
-        message : "You are Signed Up"
-    })
-    console.log(users)
-})
-
-app.post("/signin" , (req , res)=>{
-    const username = req.body.username
-    const password = req.body.password
-    
-    const user = users.find(user => user.username === username && user.password === password)
-
-    if (user) {
-        const token = jwt.sign({
-            username : username
-        }, JWT_SECRET)
-        user.token = token;
-        res.send({
-            token
-        })
-    } else {
-        res.status(403).send({
-            message : "Invalid username and password"
-        })
+function signJwt (username , password){
+    const usernameResponse = emailSchema.safeParse(username)
+    const passwordResponse = passwordSchema.safeParse(password)
+    if (!usernameResponse.success || !passwordResponse.success) {
+        return null
     }
-    console.log(users)
-})
 
-app.get("/me" , (req , res)=> {
-   const token = req.headers.token
-   const decodedInformation = jwt.verify(token ,JWT_SECRET)
-   const username = decodedInformation.username
-   const user = users.find(user => user.token === token)
+    const signature = jwt.sign({
+        username
+    }, jwtPassword )
 
-   
-   if (user) {
-    res.send({
-        username : user.username,
-        password : user.password
-    })
-   } else {
-    res.status(403).send({
-        message : "Invalid username and password"
-    })
-   }
-})
+    return signature;
+}
 
-app.listen(3000)
+const ans = signJwt("ramankurai27@gmail.com" , "123456")
+console.log(ans)
