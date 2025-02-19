@@ -19,5 +19,25 @@ function signJwt (username , password){
     return signature;
 }
 
+function decodeJwt(token) {
+    const decoded = jwt.decode(token) 
+    if (decoded) {
+        return true
+    } else {
+        return false
+    }
+}
+console.log(decodeJwt(""))// replace empty string with token
+
+function verifyJwt(token){
+    const verified = jwt.verify(token , jwtPassword)
+    if (verified) {
+        return true
+    } else {
+        return false
+    }
+}
+
+console.log(verifyJwt)
 const ans = signJwt("ramankurai27@gmail.com" , "123456")
 console.log(ans)
